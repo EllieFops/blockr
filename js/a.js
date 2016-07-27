@@ -9,7 +9,7 @@
   function boot( ops ) {
     var run = getDashboardUpdater(ops);
 
-    ops.deserialize(
+    ops.load(
       function () {
         a("click", blockClicked(ops));
         a("scroll", run);
@@ -30,7 +30,7 @@
     {
       var li;
 
-      if (!e.srcElement.classList.contains("block-post-button"))
+      if (!e.srcElement.classList.has("block-post-button"))
         return;
 
       li = e.srcElement.parentElement;
@@ -93,7 +93,7 @@
       var j = p.length;
       for ( var i = 0; i < j; i++ ) {
         var e = p.item(i);
-        if (ops.contains(getRootId(e)))e.remove();
+        if (ops.has(getRootId(e)))e.remove();
         else modifyPost(e);
       }
     };
@@ -113,10 +113,18 @@
        * @private
        */
       function _contains( array, data ) {
-        if (array.length === 0)return true;
+
+        if (array.length === 0)
+          return true;
+
         var c = array.shift();
-        if (!data[c])return false;
-        return _contains(array, data[c]);
+        var v = data[c] || data[parseInt(c)];
+
+        if (!v)
+          return false;
+
+        return _contains(array, v);
+
       }
 
       /**
@@ -129,8 +137,71 @@
        */
       function _p( path, data ) {
         var c = path.shift();
-        if (!data[c])data[c] = {};
-        if (path.length > 0)_p(path, data[c]);
+
+        if (!data[c])
+          data[parseInt(c)] = {};
+
+        if (path.length > 0)
+          _p(path, data[parseInt(c)]);
+      }
+
+      function _check(obj) {
+
+        if (!obj)
+          return;
+
+        var coll = new Array(10);
+
+        for (var a = 0, b = 9; a < 5; a++, b--) {
+
+          if (obj[a] && obj[b]) {
+            coll[a] = obj[a];
+            coll[b] = obj[b];
+            continue;
+          }
+
+          var c = a.toString();
+          var d = b.toString();
+
+          if (!obj[c] || !obj[d])
+            return obj;
+
+          coll[a] = obj[c];
+          coll[b] = obj[d];
+        }
+
+        return coll;
+      }
+
+      function _traverse(tree) {
+
+        if (!tree)
+          return;
+
+        var out = {};
+
+        for (var a = 0; a < 10; a++) {
+
+          var prop;
+
+          if (tree[a]) {
+            prop = _check(_traverse(tree[a]));
+            if (prop)
+              out[a] = prop;
+            continue;
+          }
+
+          var b = a.toString();
+
+          if (!tree[b])
+            continue;
+
+          prop = _check(_traverse(tree[b]));
+          if (prop)
+            out[b] = prop;
+        }
+
+        return out;
       }
 
       return {
@@ -152,7 +223,7 @@
          *
          * @returns {boolean}
          */
-        contains: function ( id ) {
+        has: function ( id ) {
           if (null === id)return false;
           return _contains(id.split(""), z);
         },
@@ -160,7 +231,7 @@
         /**
          * Load the post blacklist structure.
          */
-        deserialize: function ( fun ) {
+        load: function ( fun ) {
           JSON.parse(
             chrome.storage.local.get(
               "tumblr_blacklist", function ( data ) {
@@ -176,7 +247,7 @@
          * Store the post blacklist structure
          */
         save: function () {
-          chrome.storage.local.set({ "tumblr_blacklist": z }, function () {});
+          chrome.storage.local.set({ "tumblr_blacklist": _check(_traverse(z)) }, function () {});
         }
       };
     })()
