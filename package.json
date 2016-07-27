@@ -1,0 +1,27 @@
+{
+  "name": "blockr",
+  "version": "1.1.0",
+  "description": "A simple, lightweight post blocking solution for Tumblr",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "browserify": "^13.1.0",
+    "grunt": "^1.0.1",
+    "grunt-browserify": "^5.0.0",
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-jshint": "^1.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EllieFops/blockr.git"
+  },
+  "author": "Elizabeth Harper",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EllieFops/blockr/issues"
+  },
+  "homepage": "https://github.com/EllieFops/blockr#readme"
+}

@@ -30,8 +30,9 @@
     {
       var li;
 
-      if (!e.srcElement.classList.contains("block-post-button"))
+      if (!e.srcElement.classList.contains("block-post-button")) {
         return;
+      }
 
       li = e.srcElement.parentElement;
 
@@ -68,8 +69,9 @@
 
     contentDiv = post.children[0];
 
-    if (!contentDiv)
+    if (!contentDiv) {
       return null;
+    }
 
     attr = contentDiv.attributes.getNamedItem("data-root_id");
 
@@ -93,8 +95,11 @@
       var j = p.length;
       for ( var i = 0; i < j; i++ ) {
         var e = p.item(i);
-        if (ops.has(getRootId(e)))e.remove();
-        else modifyPost(e);
+        if (ops.has(getRootId(e))) {
+          e.remove();
+        } else {
+          modifyPost(e);
+        }
       }
     };
   }
@@ -104,48 +109,6 @@
       var z = {};
 
       /**
-       * Contains Check
-       *
-       * @param array {string[]} Path characters
-       * @param data  {Object}   Object to traverse
-       *
-       * @returns {boolean}
-       * @private
-       */
-      function _contains( array, data ) {
-
-        if (array.length === 0)
-          return true;
-
-        var c = array.shift();
-        var v = data[c] || data[parseInt(c)];
-
-        if (!v)
-          return false;
-
-        return _contains(array, v);
-
-      }
-
-      /**
-       * Push Data
-       *
-       * @param path {string[]} Path Characters
-       * @param data {Object}   Stored IDs to traverse
-       *
-       * @private
-       */
-      function _p( path, data ) {
-        var c = path.shift();
-
-        if (!data[c])
-          data[parseInt(c)] = {};
-
-        if (path.length > 0)
-          _p(path, data[parseInt(c)]);
-      }
-
-      /**
        * Attempt to collapse tree node
        *
        * @param obj Tree node
@@ -153,14 +116,15 @@
        * @return {*}
        * @private
        */
-      function _check(obj) {
+      function _check( obj ) {
 
-        if (!obj)
+        if (!obj) {
           return;
+        }
 
         var coll = new Array(10);
 
-        for (var a = 0, b = 9; a < 5; a++, b--) {
+        for ( var a = 0, b = 9; a < 5; a++, b-- ) {
 
           if (obj[a] && obj[b]) {
             coll[a] = obj[a];
@@ -171,8 +135,9 @@
           var c = a.toString();
           var d = b.toString();
 
-          if (!obj[c] || !obj[d])
+          if (!obj[c] || !obj[d]) {
             return obj;
+          }
 
           coll[a] = obj[c];
           coll[b] = obj[d];
@@ -181,60 +146,42 @@
         return coll;
       }
 
-      function _traverse(tree) {
+      function _traverse( tree ) {
 
-        if (!tree)
+        if (!tree) {
           return;
+        }
 
         var out = {};
 
-        for (var a = 0; a < 10; a++) {
+        for ( var a = 0; a < 10; a++ ) {
 
           var prop;
 
           if (tree[a]) {
             prop = _check(_traverse(tree[a]));
-            if (prop)
+            if (prop) {
               out[a] = prop;
+            }
             continue;
           }
 
           var b = a.toString();
 
-          if (!tree[b])
+          if (!tree[b]) {
             continue;
+          }
 
           prop = _check(_traverse(tree[b]));
-          if (prop)
+          if (prop) {
             out[b] = prop;
+          }
         }
 
         return out;
       }
 
       return {
-
-        /**
-         * Push A New ID Into the ID structure.
-         *
-         * @param id {string} ID to push
-         */
-        push: function ( id ) {
-          var a = (typeof id == "string") ? id.split("") : id;
-          _p(a, z);
-        },
-
-        /**
-         * Check if an ID is stored in the structure
-         *
-         * @param id {string} ID to check for
-         *
-         * @returns {boolean}
-         */
-        has: function ( id ) {
-          if (null === id)return false;
-          return _contains(id.split(""), z);
-        },
 
         /**
          * Load the post blacklist structure.
