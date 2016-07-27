@@ -30,7 +30,7 @@
     {
       var li;
 
-      if (!e.srcElement.classList.has("block-post-button"))
+      if (!e.srcElement.classList.contains("block-post-button"))
         return;
 
       li = e.srcElement.parentElement;
@@ -145,6 +145,14 @@
           _p(path, data[parseInt(c)]);
       }
 
+      /**
+       * Attempt to collapse tree node
+       *
+       * @param obj Tree node
+       *
+       * @return {*}
+       * @private
+       */
       function _check(obj) {
 
         if (!obj)
