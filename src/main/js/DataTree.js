@@ -1,35 +1,54 @@
 "use strict";
 
+const base = [ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 ];
+
+const pad = (s) => "0000000000000000".substring(s.length) + s;
+
 /**
  * Put ID in data tree
  *
- * @param {string[]} arr
- * @param {object}   tree
+ * @param {string[]|string} arr
+ * @param {object}          tree
  */
 const put = ( arr, tree ) => {
-  const c = parseInt(arr.shift());
-  const r = arr.length > 0;
+
+  const x = (typeof arr === "string") ? pad(arr).split("") : arr;
+  const c = parseInt(x.shift());
+  const r = x.length > 0;
 
   if (!tree[c]) {
     tree[c] = r ? {} : 1;
   }
 
   if (r) {
-    put(arr, tree);
+    put(x, tree[c]);
+  }
+
+  // Convert node to array to condense storage
+  if( !Array.isArray(tree[c]) && Object.keys(tree[c]).length === base.length ) {
+
+    const node = [];
+
+    for ( const i of base ) {
+      node.push(tree[c][i]);
+    }
+
+    tree[c] = node;
   }
 };
 
 /**
  * Determine if data tree contains an ID
  *
- * @param {string[]} arr
+ * @param {string[]|string} arr
  * @param {object}   tree
  *
  * @return {boolean}
  */
 const has = ( arr, tree ) => {
-  const c = parseInt(arr.shift());
-  const r = arr.length > 0;
+  const x = (typeof arr === "string") ? pad(arr).split("") : arr;
+  const c = parseInt(x.shift());
+  const r = x.length > 0;
 
   if (!tree[c]) {
     return false;
@@ -38,27 +57,9 @@ const has = ( arr, tree ) => {
   if (r) {
     return tree[c] === 1;
   } else {
-    return has(arr, tree);
+    return has(x, tree[c]);
   }
 };
-
-/**
- * Put ID Into Data Tree
- *
- * @param {string} id
- * @param {object} tree
- */
-exports.put = ( id, tree ) => put(id.split(""));
-
-/**
- * Check if Data Tree contains ID
- *
- * @param {string} id
- * @param {object} tree
- *
- * @return {boolean}
- */
-exports.has = ( id, tree ) => has(id.split(""));
 
 /**
  * Flatten Data Tree Into Array Of IDs
@@ -67,7 +68,8 @@ exports.has = ( id, tree ) => has(id.split(""));
  *
  * @return {string[]}
  */
-exports.flatten = ( tree ) => {
+const flatten = ( tree ) => {
+
   const ret = [];
 
   for ( let i = 0; i < 10; i++ ) {
@@ -80,12 +82,12 @@ exports.flatten = ( tree ) => {
       return i.toString();
     }
 
-    for ( const x of a(o[i]) ) {
+    for ( const x of flatten(tree[i]) ) {
       ret.push(i.toString() + x);
     }
-
   }
 
   return ret;
 };
 
+module.exports = { flatten, has, put };
