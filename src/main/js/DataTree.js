@@ -54,7 +54,7 @@ const has = ( arr, tree ) => {
     return false;
   }
 
-  if (r) {
+  if (!r) {
     return tree[c] === 1;
   } else {
     return has(x, tree[c]);

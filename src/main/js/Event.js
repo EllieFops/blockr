@@ -2,14 +2,14 @@
 
 const { getRootId, modifyPost } = require("./UI");
 
-exports.blockPost = ( c ) => ( e ) => {
+exports.blockPost = c => e => {
   if (!e.srcElement.classList.contains("block-post-button")) { return; }
   const li = e.srcElement.parentElement;
   c(getRootId(li));
   li.remove();
 };
 
-exports.pageScroll = ( h ) => () => {
+exports.pageScroll = h => () => {
   const p = document.querySelectorAll("li.post_container:not(.buttoned):not(#new_post_buttons)");
   const q = p.length;
 
