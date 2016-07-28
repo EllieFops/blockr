@@ -1,3 +1,5 @@
 .idea/
 .extras/
 *.zip
+node_modules/
+build/
