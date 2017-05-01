@@ -46,6 +46,11 @@ const put = ( arr, tree ) => {
  * @return {boolean}
  */
 const has = ( arr, tree ) => {
+
+  if ( arr === null || arr === undefined ) {
+    return false;
+  }
+
   const x = (typeof arr === "string") ? pad(arr).split("") : arr;
   const c = parseInt(x.shift());
   const r = x.length > 0;
