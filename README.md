@@ -1,4 +1,7 @@
 # blockr
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/Foxcapades/blockr.svg)](https://greenkeeper.io/)
+
 (Chrome Extension) A simple, lightweight post blocking solution for Tumblr
 
 ## Release Notes
